@@ -1,8 +1,8 @@
 ## Let
 
 - $\text{Rock} = 0$
-- $\text{Paper} = 0$
-- $\text{Scissors} = 0$
+- $\text{Paper} = 1$
+- $\text{Scissors} = 2$
 
 ## Then
 
