@@ -20,17 +20,15 @@ const createCharMap = (arr: string[]) => {
 }
 
 // Function to keep strings only shared by two strings
-const containsBoth = (str1: string, str2: string) => {
-    const inBoth = str1.split('').filter(char => {
-        return str2.includes(char);
-    });
-
-    /* Current result includes duplicates.
-       I'm sure there is a cleaner way to do this, but it's
-       Saturday morning and I'm too lazy. */
-    return inBoth[0];
+const intersection = (str1: string, str2: string) => {
+    const inBoth = str1.split('')
+        .filter(char => str2.includes(char))
+        .filter((e, i, c) => c.indexOf(e) === i);
+    
+    return inBoth.toString();
 }
 
+// Main Function
 const calculatePriority = (data: string[]) => {
     const alphabetArr = 'abcdefghijklmnopqrstuvwxyz'.split('');
     const charMap = createCharMap(alphabetArr);
@@ -42,14 +40,12 @@ const calculatePriority = (data: string[]) => {
         const LHS = rucksack.slice(0, midPoint);
         const RHS = rucksack.slice(midPoint);
 
-        const commonChar = containsBoth(LHS, RHS);
+        const commonChar = intersection(LHS, RHS);
 
         priority += charMap[commonChar];
     });
 
-    return priority
+    console.log(`The sum of the priorities is ${priority}!`);
 }
 
-const priority = calculatePriority(RSContents);
-
-console.log(`The priority is ${priority}!`);
+calculatePriority(RSContents);
