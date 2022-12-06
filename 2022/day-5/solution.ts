@@ -1,3 +1,4 @@
+import { Console } from "console";
 import readInput from "../functions/readInput";
 
 const crates = readInput('inputs.txt');
@@ -64,7 +65,7 @@ const transpose = (arr: string[][]) => {
     return arrCleaned;
 };
 
-// Function to rearrange the crates
+// Function to rearrange the crate using the CrateMover 9000
 const rearrangeCrates = (crates: string[][], instructions: string[]) => {
     instructions.forEach(instruction => {
         const fromIndex = instruction.indexOf('from');
@@ -83,6 +84,24 @@ const rearrangeCrates = (crates: string[][], instructions: string[]) => {
     return crates;
 }
 
+// Function to rearrange crates
+const rearrangeCratesMultiple = (crates: string[][], instructions: string[]) => {
+    instructions.forEach(instruction => {
+        const fromIndex = instruction.indexOf('from');
+        const toIndex = instruction.indexOf('to');
+
+        const numCratesToMove = parseInt(instruction.slice(5, fromIndex - 1));
+        const stackToMoveFrom = parseInt(instruction.slice(fromIndex + 5, toIndex - 1)) - 1;
+        const stackToMoveTo = parseInt(instruction.slice(toIndex + 3)) - 1;
+
+        const cratesToMove = crates[stackToMoveFrom].slice(-numCratesToMove);
+        
+        crates[stackToMoveTo] = crates[stackToMoveTo].concat(cratesToMove);
+        crates[stackToMoveFrom] = crates[stackToMoveFrom].slice(0, -numCratesToMove);
+    });
+    
+    return crates;
+}
 
 // Absolutely Painful
 const calculateMessage = (data: string[]) => {
@@ -97,8 +116,24 @@ const calculateMessage = (data: string[]) => {
 
     cratesRearranged.forEach(stack => secretMessage += stack.at(-1));
 
-    console.log(`The secret message is ${secretMessage}!`);
-    console.log(unpackedArr);
+    console.log(`The secret message, using the CrateMover 9000, is ${secretMessage}!`);
+}
+
+// Suprisingly just as painful
+const calculateMessageMultiple = (data: string[]) => {
+    const { startingStack, instructions } = splitArr(data);
+    const unpackedArr = decompose(startingStack);
+    const groupedArr = groupElements(unpackedArr);
+    const transposedArr = transpose(groupedArr);
+
+    const cratesRearranged = rearrangeCratesMultiple(transposedArr, instructions);
+
+    let secretMessage: string = '';
+
+    cratesRearranged.forEach(stack => secretMessage += stack.at(-1));
+
+    console.log(`The secret message, using the CrateMover 9001, is ${secretMessage}!`);
 }
 
 calculateMessage(crates);
+calculateMessageMultiple(crates);
